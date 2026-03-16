@@ -11,8 +11,13 @@ interface TaskProps {
 }
 
 const TaskItem = ({ completed, text, onToggleComplete, onPressEdit, onPressDelete }: TaskProps) => {
+  
+  const cardStyles:any = [styles.card]
+
+  if (completed) cardStyles.push(styles.cardCompleted)
+  
   return (
-    <View style={styles.card}>
+    <View style={cardStyles}>
       <Pressable onPress={onToggleComplete}>
         <IconCheck checked={completed} />
       </Pressable>
@@ -42,6 +47,9 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     borderRadius: 8,
     gap: 8
+  },
+  cardCompleted: {
+    backgroundColor: "#0f725c"
   },
   text: {
     flex: 1,

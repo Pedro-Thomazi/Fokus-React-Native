@@ -71,7 +71,7 @@ export default function Pomodoro() {
         <Timer seconds={seconds} />
         <FocusButton
           title={timerRunning ? "Pausar" : "Começar"}
-          // icon={timerRunning ? <IconPause /> : <IconPlay />} 
+          icon={timerRunning ? <IconPause /> : <IconPlay />} 
           onPress={toggleTimer} />
       </View>
       <View style={styles.footer}>
@@ -88,7 +88,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 40,
-
     backgroundColor: "#021123"
   },
   image: {
