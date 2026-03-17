@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { createContext, ReactNode, useContext, useState } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
+
 
 interface AuthContextType {
   tasks: TaskProp[]
@@ -14,42 +15,80 @@ interface TaskProp {
   completed: boolean
 }
 
-const [tasks, setTasks] = useState<TaskProp[]>([])
 
-function addTask(description: string) {
-  setTasks(oldState => {
-    return [
-      ...oldState,
-      {
-        description,
-        completed: false,
-        id: oldState.length + 1
-      }
-    ]
-  })
-}
 
-const toggleTaskCompleted = (id: number) => {
-  setTasks(oldState => {
-    return oldState.map(t => {
-      if (t.id == id) {
-        t.completed = !t.completed
+const TaskContext = createContext<AuthContextType | undefined>(undefined)
+
+function TaskProvider({ children }: { children: ReactNode }) {
+
+  const [tasks, setTasks] = useState<TaskProp[]>([])
+  const [isLoaded, setIsLoaded] = useState<boolean>(false)
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem("fokus-task")
+        const loadedData = jsonValue != null ? JSON.parse(jsonValue) : []
+        setTasks(loadedData)
+        setIsLoaded(true)
+      } catch (error) {
+        
       }
-      return t
+    }
+
+    getData()
+  }, [])
+
+  useEffect(() => {
+
+    const storeData = async (value: any) => {
+      try {
+        const jsonValue = JSON.stringify(value)
+        await AsyncStorage.setItem("fokus-task", jsonValue)
+      } catch (error) {
+        
+      }
+    }
+
+    if (isLoaded) {
+      storeData(tasks)
+    }
+
+  }, [tasks])
+
+  function addTask(description: string) {
+    setTasks(oldState => {
+      const newTasks = [
+        ...oldState,
+        {
+          description,
+          completed: false,
+          id: Date.now()
+        }
+      ]
+
+      console.log("Novo estado:", newTasks)
+      return newTasks
     })
-  })
-}
+  }
 
-const deleteTask = (id: number) => {
-  setTasks(oldState => {
-    return oldState.filter(t => t.id != id)
-  })
-}
+  const toggleTaskCompleted = (id: number) => {
+    setTasks(oldState => {
+      return oldState.map(t => {
+        if (t.id == id) {
+          return { ...t, completed: !t.completed }
+        }
+        return t
+      })
+    })
+  }
 
+  const deleteTask = (id: number) => {
+    setTasks(oldState => {
+      return oldState.filter(t => t.id != id)
+    })
+  }
 
-export const TaskContext = createContext<AuthContextType | undefined>(undefined)
-
-function TaskProvider ({ children }: { children: ReactNode }) {
 
   return (
     <TaskContext.Provider value={{ tasks, addTask, toggleTaskCompleted, deleteTask }}>
@@ -66,6 +105,7 @@ function useAuthContext() {
 }
 
 export {
+  TaskContext,
   TaskProvider,
   useAuthContext
 }

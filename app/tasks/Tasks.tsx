@@ -1,20 +1,34 @@
+import { useAuthContext } from '@/components/Context/TaskProvider'
 import FocusButton from '@/components/FokusButton/FocusButton'
 import { IconPlay, IconPlus } from '@/components/Icon/Icon'
 import TaskItem from '@/components/TaskItem/TaskItem'
 import { router } from 'expo-router'
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 
 const Tasks = () => {
+  const { tasks, deleteTask, toggleTaskCompleted } = useAuthContext()
+
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>
-        <Text style={styles.text}>Listar de taréfas</Text>
         <View style={styles.inner}>
-          <TaskItem completed={true} text='Estudar' />
-          <TaskItem completed={false} text='Mijar' />
+          {/* {tasks.map((t) => (
+            <TaskItem key={t.id} completed={t.completed} text={t.description} />
+          ))} */}
+          <FlatList
+            data={tasks}
+            renderItem={({ item }) => <TaskItem completed={item.completed} 
+            text={item.description}
+            onPressDelete={() => deleteTask(item.id)} 
+            onPressEdit={() => console.log()} 
+            onToggleComplete={() => toggleTaskCompleted(item.id)} />}
+            keyExtractor={item => item.id}
+            ItemSeparatorComponent={() => <View style={{height: 8}} />}
+            ListHeaderComponent={<Text style={styles.text}>Listar de taréfas</Text>}
+            ListFooterComponent={<View style={{marginTop: 16}}><FocusButton outline title='Adicionar nova taréfa' onPress={() => router.navigate("/addTask/AddTask")} icon={<IconPlus />} /></View>}
+          />
         </View>
-        <FocusButton outline title='Adicionar nova taréfa' onPress={() => router.navigate("/addTask/AddTask")} icon={<IconPlus />} />
       </View>
     </View>
   )
@@ -33,7 +47,8 @@ const styles = StyleSheet.create({
   text: {
     textAlign: "center",
     color: "#fff",
-    fontSize: 26
+    fontSize: 26,
+    marginBottom: 16
   },
   inner: {
     gap: 8
