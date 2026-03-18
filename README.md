@@ -4,3 +4,5 @@
 
 ### Sobre
 Otimizador de produtividade, contando com um timer de 5, 15 ou 25 minutos para estudos ou tarefas.
+
+Você pode adicionar, atualizar ou remover uma tarefa diária.
