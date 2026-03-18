@@ -36,6 +36,21 @@ export default function Layout() {
               }
             }
           } />
+          <Drawer.Screen name='edit/[id]' options={
+            {
+              drawerItemStyle:
+                { display: "none" },
+              title: "",
+              headerLeft: () => {
+                return <Ionicons
+                name='arrow-back'
+                size={24}
+                color="#fff"
+                style={{ marginLeft: 16 }}
+                onPress={() => router.navigate("/tasks/Tasks")} />
+              }
+            }
+          } />
           <Drawer.Screen name='pomodoro' options={{ drawerLabel: "Timer", title: "" }} />
           <Drawer.Screen name='tasks/Tasks' options={{ drawerLabel: "Lista de taréfas", title: "" }} />
         </Drawer>

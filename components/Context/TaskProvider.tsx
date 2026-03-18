@@ -5,6 +5,7 @@ import React, { createContext, ReactNode, useContext, useEffect, useState } from
 interface AuthContextType {
   tasks: TaskProp[]
   addTask: (description: string) => void
+  updateTask: (id: number, newDescription: string) => void
   toggleTaskCompleted: (id: number) => void
   deleteTask: (id: number) => void
 }
@@ -72,6 +73,17 @@ function TaskProvider({ children }: { children: ReactNode }) {
     })
   }
 
+  const updateTask = (id: number, newDescription: string) => {
+    setTasks(oldState => {
+      return oldState.map(t => {
+        if (t.id == id) {
+          return { ...t, description: newDescription }
+        }
+        return t
+      })
+    })
+  }
+
   const toggleTaskCompleted = (id: number) => {
     setTasks(oldState => {
       return oldState.map(t => {
@@ -91,7 +103,7 @@ function TaskProvider({ children }: { children: ReactNode }) {
 
 
   return (
-    <TaskContext.Provider value={{ tasks, addTask, toggleTaskCompleted, deleteTask }}>
+    <TaskContext.Provider value={{ tasks, addTask, updateTask, toggleTaskCompleted, deleteTask }}>
       {children}
     </TaskContext.Provider>
   )

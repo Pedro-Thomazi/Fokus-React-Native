@@ -21,7 +21,7 @@ const Tasks = () => {
             renderItem={({ item }) => <TaskItem completed={item.completed} 
             text={item.description}
             onPressDelete={() => deleteTask(item.id)} 
-            onPressEdit={() => console.log()} 
+            onPressEdit={() => router.navigate(`/edit/${item.id}`)} 
             onToggleComplete={() => toggleTaskCompleted(item.id)} />}
             keyExtractor={item => item.id}
             ItemSeparatorComponent={() => <View style={{height: 8}} />}
